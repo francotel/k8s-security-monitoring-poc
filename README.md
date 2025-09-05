@@ -23,3 +23,4 @@ brew install kubectl helm k9s
 ```
 
 # Docker Desktop (from docker.com)
+![k8s-docker](./images/k8s-docker.png)
