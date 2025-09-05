@@ -1,24 +1,25 @@
-# k8s-security-monitoring-poc
+# 🛡️ Kubernetes Security Monitoring Lab
 
-app-manifests
-changing to trivy operator
-3 years ago
-assets
-update images
-3 years ago
-dashboards
-changing things around
-3 years ago
-observability-conf
-adding content to install and configure AlertManager
-2 years ago
-prom-rule
-Change Alert
-2 years ago
-tracee-installation
-changes to the resources
-2 years ago
-.gitignore
-adding content to install and configure AlertManager
-2 years ago
-README.md
+[![Kubernetes](https://img.shields.io/badge/Kubernetes-≥_1.25-326ce5.svg)](https://kubernetes.io/)
+[![Helm](https://img.shields.io/badge/Helm-≥_3.0-0f1689.svg)](https://helm.sh/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+A practical lab for Kubernetes security monitoring with Prometheus, Grafana, and Trivy Operator. This guide will help you set up a complete security monitoring stack on your local macOS environment using Docker.
+
+## 🚀 Features
+
+- ✅ **Real-time monitoring** with Prometheus + Grafana
+- ✅ **Vulnerability scanning** with Trivy Operator  
+- ✅ **Pre-configured dashboards** and alerts
+- ✅ **Vulnerable applications** for testing
+- ✅ **Multi-node Kubernetes cluster** (Docker Desktop)
+
+## 📋 Prerequisites
+
+### 🖥️ macOS Tools
+```bash
+# Required tools
+brew install kubectl helm k9s
+```
+
+# Docker Desktop (from docker.com)
