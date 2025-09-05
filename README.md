@@ -22,5 +22,16 @@ A practical lab for Kubernetes security monitoring with Prometheus, Grafana, and
 brew install kubectl helm k9s
 ```
 
-# Docker Desktop (from docker.com)
+### Docker Desktop (from docker.com)
 ![k8s-docker](./images/k8s-docker.png)
+
+```bash
+# Check tools are installed
+kubectl version --client
+helm version
+docker version
+
+# Verify Kubernetes cluster (Docker Desktop)
+kubectl get nodes
+# Should show: 1 control-plane + 1 worker node
+```
