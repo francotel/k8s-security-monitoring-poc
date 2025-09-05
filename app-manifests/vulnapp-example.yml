@@ -1,3 +1,31 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: insecure-secrets
+  annotations:
+    trivy.security.devopstools.io/severity: "HIGH"
+type: Opaque
+data:
+  # Weak passwords encoded in base64 (easily decodable)
+  admin-password: YWRtaW4xMjM=           # admin123
+  database-url: amRiYzpteXNxbDovL3Jvb3Q6cGFzc3dvcmRAMTIzLjQ1LjY3Ljg5OjMzMDYvZGI=  # jdbc:mysql://root:password@123.45.67.89:3306/db
+  api-key: dGVzdC1hcGkta2V5LWluLWNsZWFyLXRleHQ=  # test-api-key-in-clear-text
+  auth-token: ZXhwb3NlZC10b2tlbi0xMjM0NTY3OA==  # exposed-token-12345678
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  config.properties: |
+    # Insecure hardcoded credentials
+    db.username=admin
+    db.password=secret123
+    api.url=https://api.example.com?key=exposed-key-here
+    debug=true
+    # Plain text secret in config file
+    encryption.key=my-super-secret-key-123
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -11,6 +39,8 @@ spec:
     metadata:
       labels:
         run: react-application
+      annotations:
+        trivy.security.devopstools.io/severity: "MEDIUM"
     spec:
       containers:
       - name: react-application
@@ -22,7 +52,22 @@ spec:
           limits:
             memory: 512Mi
             cpu: 500m
-
+        # Environment variables with exposed secrets
+        env:
+        - name: DB_PASSWORD
+          value: "insecure-db-password-123"
+        - name: API_SECRET
+          value: "exposed-api-secret-456"
+        - name: ENCRYPTION_KEY
+          value: "plain-text-encryption-key"
+        # Mounting secrets as environment variables (will be detected)
+        envFrom:
+        - secretRef:
+            name: insecure-secrets
+        # Insecure security context
+        securityContext:
+          runAsUser: 0  # Run as root
+          privileged: false
 ---
 apiVersion: v1
 kind: Service
