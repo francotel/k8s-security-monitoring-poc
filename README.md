@@ -71,6 +71,10 @@ kubectl port-forward svc/prometheus-grafana -n monitoring 3000:80
 kubectl port-forward svc/prometheus-operated -n monitoring 9090:9090
 ```
 
+- **Grafana Access** : http://localhost:3000
+- **Credentials**: admin / prom-operator
+- **Prometheus Access**: http://localhost:9090
+
 ![grafana-dash](./images/grafana-dash.png)
 
 ![prometheus-dash](./images/prometheus-dash.png)
