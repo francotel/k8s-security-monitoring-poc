@@ -53,7 +53,7 @@ helm upgrade --install prometheus prometheus-community/kube-prometheus-stack \
   --values obs-conf/prom-values.yml
 ```
 
-###✅ Validate Installation
+### ✅ Validate Installation
 ```bash
 # Check pods status
 kubectl get pods -n monitoring --watch
@@ -61,3 +61,16 @@ kubectl get pods -n monitoring --watch
 # Verify all components are running
 kubectl get all -n monitoring
 ```
+
+### 🌐 Access Dashboards (Port Forwarding)
+```bash
+# Access Grafana Dashboard
+kubectl port-forward svc/prometheus-grafana -n monitoring 3000:80
+
+# Access Prometheus UI
+kubectl port-forward svc/prometheus-operated -n monitoring 9090:9090
+```
+
+![grafana-dash](./images/grafana-dash.png)
+
+![prometheus-dash](./images/prometheus-dash.png)
