@@ -1,14 +1,26 @@
 trivy:
   ignoreUnfixed: true
+  # Severity levels to report
+  severity: "MEDIUM,HIGH,CRITICAL"
+
 serviceMonitor:
   # enabled determines whether a serviceMonitor should be deployed
   enabled: true
 
+nodeSelector: {}
 
-# --set="serviceMonitor.enabled=true" \
-# --set="nodeCollector.tolerations[0].key=node-role.kubernetes.io/control-plane" \
-# --set="nodeCollector.tolerations[0].operator=Exists" \
-# --set="nodeCollector.tolerations[0].effect=NoSchedule" \
-# --set="service.metricsPort=8080" \
-# --set="nodeCollector.nodeSelector=" \
-# --set="operator.metricsVulnIdEnabled=true" \
+nodeCollector:
+  # Enable node collector daemonset
+  enabled: true
+  
+  # Tolerations to allow running on control-plane nodes
+  tolerations:
+    - key: "node-role.kubernetes.io/control-plane"
+      operator: "Exists"
+      effect: "NoSchedule"
+
+services:
+  metricsPort: 8080
+
+operator:
+  metricsVulnIdEnabled: true

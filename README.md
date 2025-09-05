@@ -38,13 +38,14 @@ kubectl get nodes
 
 ## ⚡ Quick Installation
 
+### 1. Install Kube-Prometheus-Stack
+
 ### Add Helm Repository and Update
 ```bash
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo update
 ```
 
-### Install Kube-Prometheus-Stack
 ```bash
 helm upgrade --install prometheus prometheus-community/kube-prometheus-stack \
   --version 45.7.1 \
@@ -78,3 +79,32 @@ kubectl port-forward svc/prometheus-operated -n monitoring 9090:9090
 ![grafana-dash](./images/grafana-dash.png)
 
 ![prometheus-dash](./images/prometheus-dash.png)
+
+
+### 🛡️ 2. Install Trivy Operator
+
+### Add Helm Repository and Update
+```bash
+helm repo add aqua https://aquasecurity.github.io/helm-charts
+helm repo update
+```
+
+```bash
+helm upgrade --install trivy-operator aqua/trivy-operator \
+  --namespace trivy-system \
+  --create-namespace \
+  --version v0.30.0 \
+  --values obs-conf/trivy-values.yml
+```
+
+### ✅ Validate Trivy Installation
+```bash
+# Check Trivy Operator pods
+kubectl get pods -n trivy-system
+
+# Verify node collectors are running on all nodes
+kubectl get pods -n trivy-system -o wide | grep node-collector
+
+# Check vulnerability reports
+kubectl get vulnerabilityreports --all-namespaces
+```
