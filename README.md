@@ -113,15 +113,122 @@ kubectl get vulnerabilityreports --all-namespaces
 kubectl port-forward svc/trivy-operator -n trivy-system 5000:8080
 ```
 
-![trivy-metrics](trivy-metrics.png)
+![trivy-metrics](./images/trivy-metrics.png)
+
+### 🌐 Access Points Summary
+
+| Service | Port Forward Command | URL |
+|---------|----------------------|-----|
+| **Grafana** | `kubectl port-forward svc/prometheus-grafana -n monitoring 3000:80` | http://localhost:3000 |
+| **Prometheus** | `kubectl port-forward svc/prometheus-operated -n monitoring 9090:9090` | http://localhost:9090 |
+
 
 ### 🎯 3. Deploy Vulnerable Applications
 
 ```bash
-# Deploy both vulnerable applications
-kubectl apply -f app-manifests/vul-app-1.yml
-kubectl apply -f app-manifests/vul-app-2.yml
+# Create a namespace for security testing
+kubectl create namespace security-demo
 
-# Verify applications are running
-kubectl get pods | grep vul-app
+# Deploy both vulnerable applications to the security-demo namespace
+kubectl apply -f app-manifests/vulnapp-crowdstrike.yml -n security-demo
+kubectl apply -f app-manifests/vulnapp-example.yml -n security-demo
+
+# Verify applications are running in the correct namespace
+kubectl get pods -n security-demo
+
+# If you need to port-forward, use the correct namespace and service name
+# First check the service names in your security-demo namespace:
+kubectl get svc -n security-demo
+
+# Then port-forward (example - replace with your actual service name):
+kubectl port-forward svc/vulnerable-example-com -n security-demo 8080:80
 ```
+
+![crowdstrike-app](./images/crowdstrike-app.png)
+
+## 📊 Trivy CLI Reports Summary
+
+### 🔍 Basic Vulnerability Reports
+
+```bash
+# Summary of all vulnerabilities in cluster
+trivy k8s --report summary
+
+# Detailed vulnerability report with tolerations for control-plane
+trivy k8s --report summary --tolerations node-role.kubernetes.io/control-plane="":NoSchedule
+
+# Get all vulnerability reports across namespaces
+kubectl get vulnerabilityreports --all-namespaces -o wide
+```
+
+### 🕵️‍♂️ Secret Scanning
+```bash
+# Scan for exposed secrets in default namespace
+trivy k8s --scanners=secret --report=summary --include-namespaces default
+
+# Get detailed exposed secret reports
+kubectl describe exposedsecretreport -n <namespace>
+
+# List all exposed secret reports
+kubectl get exposedsecretreports -A
+```
+
+### 🏗️ Infrastructure & Configuration Assessment
+```bash
+# Get cluster infrastructure assessment reports
+kubectl get clusterinfraassessmentreports -o wide
+
+# Scan for misconfigurations
+trivy k8s --scanners=misconfig --report=summary
+
+# CIS compliance scan for Kubernetes 1.23
+trivy k8s --compliance=k8s-cis-1.23 --report all
+```
+
+### 🎯 Targeted Scans
+```bash
+# Scan specific namespace (default)
+trivy k8s --report summary --include-namespaces default
+
+# Scan kube-system namespace only
+trivy k8s --include-namespaces kube-system --report summary
+
+# Scan only for HIGH severity vulnerabilities
+trivy k8s --severity=HIGH --report=all --include-namespaces default
+```
+
+### 📋 Comprehensive Scans
+```bash
+# Complete vulnerability scan with all details
+trivy k8s --scanners vuln --report all
+
+# Combined scan: vulnerabilities + secrets
+trivy k8s --scanners=vuln,secret --report=summary
+
+# Full cluster scan with all scanners
+trivy k8s --scanners=vuln,secret,misconfig,config --report all
+```
+
+
+### 📊 Output Formats
+```bash
+# JSON format for automation
+trivy k8s --report summary --format json
+
+# HTML report
+trivy k8s --report all --format html > security-report.html
+
+# CSV output
+trivy k8s --report summary --format csv > scan-results.csv
+```
+
+
+## 🚀 Quick Cheat Sheet
+
+| Purpose | Command |
+|---------|---------|
+| **Quick Summary** | `trivy k8s --report summary` |
+| **High Severity Only** | `trivy k8s --severity=HIGH,CRITICAL --report=summary` |
+| **Secrets Scan** | `trivy k8s --scanners=secret --report=summary` |
+| **Compliance Check** | `trivy k8s --compliance=k8s-cis-1.23 --report summary` |
+| **Namespace Specific** | `trivy k8s --include-namespaces default --report summary` |
