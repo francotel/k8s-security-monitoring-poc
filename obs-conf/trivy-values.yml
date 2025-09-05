@@ -19,7 +19,7 @@ nodeCollector:
       operator: "Exists"
       effect: "NoSchedule"
 
-services:
+service:
   metricsPort: 8080
 
 operator:

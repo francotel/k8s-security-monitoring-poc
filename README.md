@@ -80,7 +80,6 @@ kubectl port-forward svc/prometheus-operated -n monitoring 9090:9090
 
 ![prometheus-dash](./images/prometheus-dash.png)
 
-
 ### 🛡️ 2. Install Trivy Operator
 
 ### Add Helm Repository and Update
@@ -107,4 +106,22 @@ kubectl get pods -n trivy-system -o wide | grep node-collector
 
 # Check vulnerability reports
 kubectl get vulnerabilityreports --all-namespaces
+```
+
+### 🌐 Access Trivy metrics (Port Forwarding)
+```bash
+kubectl port-forward svc/trivy-operator -n trivy-system 5000:8080
+```
+
+![trivy-metrics](trivy-metrics.png)
+
+### 🎯 3. Deploy Vulnerable Applications
+
+```bash
+# Deploy both vulnerable applications
+kubectl apply -f app-manifests/vul-app-1.yml
+kubectl apply -f app-manifests/vul-app-2.yml
+
+# Verify applications are running
+kubectl get pods | grep vul-app
 ```
