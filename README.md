@@ -188,13 +188,13 @@ trivy k8s --compliance=k8s-cis-1.23 --report all
 ### 🎯 Targeted Scans
 ```bash
 # Scan specific namespace (default)
-trivy k8s --report summary --include-namespaces default
+trivy k8s --report summary --include-namespaces security-demo
 
 # Scan kube-system namespace only
 trivy k8s --include-namespaces kube-system --report summary
 
 # Scan only for HIGH severity vulnerabilities
-trivy k8s --severity=HIGH --report=all --include-namespaces default
+trivy k8s --severity=HIGH --report=all --include-namespaces security-demo
 ```
 
 ### 📋 Comprehensive Scans
