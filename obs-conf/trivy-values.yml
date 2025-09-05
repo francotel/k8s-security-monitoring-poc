@@ -3,3 +3,12 @@ trivy:
 serviceMonitor:
   # enabled determines whether a serviceMonitor should be deployed
   enabled: true
+
+
+# --set="serviceMonitor.enabled=true" \
+# --set="nodeCollector.tolerations[0].key=node-role.kubernetes.io/control-plane" \
+# --set="nodeCollector.tolerations[0].operator=Exists" \
+# --set="nodeCollector.tolerations[0].effect=NoSchedule" \
+# --set="service.metricsPort=8080" \
+# --set="nodeCollector.nodeSelector=" \
+# --set="operator.metricsVulnIdEnabled=true" \

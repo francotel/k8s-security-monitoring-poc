@@ -35,3 +35,29 @@ docker version
 kubectl get nodes
 # Should show: 1 control-plane + 1 worker node
 ```
+
+## ⚡ Quick Installation
+
+### Add Helm Repository and Update
+```bash
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+```
+
+### Install Kube-Prometheus-Stack
+```bash
+helm upgrade --install prometheus prometheus-community/kube-prometheus-stack \
+  --version 45.7.1 \
+  --namespace monitoring \
+  --create-namespace \
+  --values obs-conf/prom-values.yml
+```
+
+###✅ Validate Installation
+```bash
+# Check pods status
+kubectl get pods -n monitoring --watch
+
+# Verify all components are running
+kubectl get all -n monitoring
+```
